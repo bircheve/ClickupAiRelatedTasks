@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClickUp AI Related Tasks Prototype</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f9fafb;
+            color: #1f2937;
+            padding: 24px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        th.ai-column {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ai-badge::before {
+            content: "✨";
+            font-size: 10px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        .btn-generate-all {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-generate-all:hover {
+            background: #5568d3;
+            transform: translateY(-1px);
+        }
+
+        .menu-btn {
+            background: transparent;
+            border: 1px solid #e5e7eb;
+            color: #6b7280;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .menu-btn:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 4px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 180px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .dropdown.active {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 10px 16px;
+            font-size: 14px;
+            color: #374151;
+            cursor: pointer;
+            transition: background 0.15s;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: #f9fafb;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .task-name {
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status.todo {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .status.in-progress {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status.done {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #f3f4f6;
+            color: #4b5563;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .ai-cell {
+            min-width: 250px;
+        }
+
+        .btn-generate {
+            background: transparent;
+            border: 1px solid #e5e7eb;
+            color: #6b7280;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-generate:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            color: #374151;
+        }
+
+        .related-tasks {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .related-task-pill {
+            background: #ede9fe;
+            color: #5b21b6;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .more-link {
+            color: #667eea;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .more-link:hover {
+            text-decoration: underline;
+        }
+
+        .no-matches {
+            color: #9ca3af;
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-backdrop.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow: hidden;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.2s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid #e5e7eb;
+            color: #6b7280;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1f2937;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 3000;
+            opacity: 0;
+            transition: all 0.3s ease-out;
+        }
+
+        .toast.active {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .popover {
+            position: absolute;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 12px;
+            z-index: 1500;
+            display: none;
+            min-width: 280px;
+        }
+
+        .popover.active {
+            display: block;
+        }
+
+        .popover-header {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .popover-item {
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            transition: background 0.15s;
+        }
+
+        .popover-item:hover {
+            background: #f9fafb;
+        }
+
+        .popover-item-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 2px;
+        }
+
+        .popover-item-meta {
+            font-size: 11px;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .similarity-score {
+            background: #ede9fe;
+            color: #5b21b6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Project 1 - Team Space</h1>
+        </div>
+
+        <div class="table-wrapper">
+            <table id="taskTable">
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Status</th>
+                        <th>Tags</th>
+                        <th>
+                            <div class="ai-column">
+                                <span class="ai-badge">AI</span>
+                                <span>Related Tasks</span>
+                                <div class="header-controls">
+                                    <button class="btn-generate-all" onclick="generateAll()">Generate all</button>
+                                    <div style="position: relative;">
+                                        <button class="menu-btn" onclick="toggleMenu(event)">⋯</button>
+                                        <div class="dropdown" id="columnMenu">
+                                            <div class="dropdown-item" onclick="openPromptModal()">Edit prompt</div>
+                                            <div class="dropdown-item" onclick="clearAllResults()">Clear results</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="taskTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal for editing prompt -->
+    <div class="modal-backdrop" id="promptModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Edit AI Prompt</h2>
+                <button class="modal-close" onclick="closePromptModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Tell AI how to pick related tasks</label>
+                    <textarea id="promptText"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closePromptModal()">Cancel</button>
+                <button class="btn-primary" onclick="savePrompt()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Popover for showing more related tasks -->
+    <div class="popover" id="popover"></div>
+
+    <script>
+        // Sample task data
+        const tasks = [
+            {
+                id: 1,
+                title: "Implement user authentication flow",
+                status: "in-progress",
+                tags: ["feature", "backend", "security"],
+                listName: "Backend Development"
+            },
+            {
+                id: 2,
+                title: "Design login page UI",
+                status: "todo",
+                tags: ["design", "frontend", "ui"],
+                listName: "Design Tasks"
+            },
+            {
+                id: 3,
+                title: "Fix authentication token expiration bug",
+                status: "todo",
+                tags: ["bug", "backend", "security"],
+                listName: "Backend Development"
+            },
+            {
+                id: 4,
+                title: "Add password reset functionality",
+                status: "todo",
+                tags: ["feature", "backend", "security"],
+                listName: "Backend Development"
+            },
+            {
+                id: 5,
+                title: "Update dashboard with new metrics",
+                status: "in-progress",
+                tags: ["feature", "frontend", "analytics"],
+                listName: "Frontend Tasks"
+            },
+            {
+                id: 6,
+                title: "Create user profile page",
+                status: "done",
+                tags: ["feature", "frontend", "ui"],
+                listName: "Frontend Tasks"
+            },
+            {
+                id: 7,
+                title: "Optimize database queries for user data",
+                status: "todo",
+                tags: ["optimization", "backend", "database"],
+                listName: "Backend Development"
+            },
+            {
+                id: 8,
+                title: "Implement OAuth social login",
+                status: "todo",
+                tags: ["feature", "backend", "security", "authentication"],
+                listName: "Backend Development"
+            },
+            {
+                id: 9,
+                title: "Design user settings page mockup",
+                status: "in-progress",
+                tags: ["design", "ui", "frontend"],
+                listName: "Design Tasks"
+            },
+            {
+                id: 10,
+                title: "Write unit tests for authentication module",
+                status: "todo",
+                tags: ["testing", "backend", "quality"],
+                listName: "Testing"
+            }
+        ];
+
+        // State management
+        let aiResults = {};
+        let currentPrompt = "Suggest up to 3 tasks that are similar or potential duplicates based on title, tags, and description. Prefer tasks in the same list and tasks updated recently.";
+
+        // Initialize the table
+        function initTable() {
+            const tbody = document.getElementById('taskTableBody');
+            tbody.innerHTML = tasks.map(task => `
+                <tr data-task-id="${task.id}">
+                    <td class="task-name">${task.title}</td>
+                    <td>
+                        <span class="status ${task.status.replace('-', '')}">${task.status.replace('-', ' ')}</span>
+                    </td>
+                    <td>
+                        <div class="tags">
+                            ${task.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    </td>
+                    <td class="ai-cell" id="ai-cell-${task.id}">
+                        <button class="btn-generate" onclick="generateForTask(${task.id})">Generate</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Initialize prompt textarea
+            document.getElementById('promptText').value = currentPrompt;
+        }
+
+        // Similarity scoring algorithm
+        function calculateSimilarity(task1, task2) {
+            if (task1.id === task2.id) return 0;
+
+            let score = 0;
+
+            // Tokenize titles
+            const words1 = task1.title.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+            const words2 = task2.title.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+
+            // Count shared words in titles
+            const sharedWords = words1.filter(w => words2.includes(w)).length;
+            score += sharedWords * 10;
+
+            // Count shared tags
+            const sharedTags = task1.tags.filter(t => task2.tags.includes(t)).length;
+            score += sharedTags * 15;
+
+            // Bonus for same list
+            if (task1.listName === task2.listName) {
+                score += 5;
+            }
+
+            return score;
+        }
+
+        // Find related tasks for a given task
+        function findRelatedTasks(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return [];
+
+            const relatedTasks = tasks
+                .map(t => ({
+                    id: t.id,
+                    title: t.title,
+                    listName: t.listName,
+                    similarityScore: calculateSimilarity(task, t)
+                }))
+                .filter(t => t.similarityScore > 0)
+                .sort((a, b) => b.similarityScore - a.similarityScore)
+                .slice(0, 3);
+
+            return relatedTasks;
+        }
+
+        // Render related tasks in a cell
+        function renderRelatedTasks(taskId, relatedTasks) {
+            const cell = document.getElementById(`ai-cell-${taskId}`);
+
+            if (relatedTasks.length === 0) {
+                cell.innerHTML = '<span class="no-matches">No strong matches</span>';
+                return;
+            }
+
+            const visibleTasks = relatedTasks.slice(0, 2);
+            const hiddenTasks = relatedTasks.slice(2);
+
+            let html = '<div class="related-tasks">';
+
+            visibleTasks.forEach(task => {
+                html += `<span class="related-task-pill">${task.title}</span>`;
+            });
+
+            if (hiddenTasks.length > 0) {
+                html += `<a class="more-link" onclick="showPopover(event, ${taskId})">+ ${hiddenTasks.length} more</a>`;
+            }
+
+            html += '</div>';
+            cell.innerHTML = html;
+        }
+
+        // Generate for a single task
+        function generateForTask(taskId) {
+            const cell = document.getElementById(`ai-cell-${taskId}`);
+            cell.innerHTML = '<span style="color: #9ca3af; font-size: 12px;">Generating...</span>';
+
+            setTimeout(() => {
+                const relatedTasks = findRelatedTasks(taskId);
+                aiResults[taskId] = relatedTasks;
+                renderRelatedTasks(taskId, relatedTasks);
+            }, 500);
+        }
+
+        // Generate for all tasks
+        function generateAll() {
+            let count = 0;
+
+            tasks.forEach((task, index) => {
+                setTimeout(() => {
+                    const relatedTasks = findRelatedTasks(task.id);
+                    aiResults[task.id] = relatedTasks;
+                    renderRelatedTasks(task.id, relatedTasks);
+                    count++;
+
+                    if (count === tasks.length) {
+                        showToast(`Generated related tasks for ${count} items.`);
+                    }
+                }, index * 100);
+            });
+        }
+
+        // Clear all results
+        function clearAllResults() {
+            aiResults = {};
+            tasks.forEach(task => {
+                const cell = document.getElementById(`ai-cell-${task.id}`);
+                cell.innerHTML = '<button class="btn-generate" onclick="generateForTask(' + task.id + ')">Generate</button>';
+            });
+            closeMenu();
+            showToast('Cleared all AI suggestions.');
+        }
+
+        // Menu toggle
+        function toggleMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('columnMenu');
+            menu.classList.toggle('active');
+        }
+
+        function closeMenu() {
+            document.getElementById('columnMenu').classList.remove('active');
+        }
+
+        // Prompt modal
+        function openPromptModal() {
+            document.getElementById('promptModal').classList.add('active');
+            closeMenu();
+        }
+
+        function closePromptModal() {
+            document.getElementById('promptModal').classList.remove('active');
+        }
+
+        function savePrompt() {
+            currentPrompt = document.getElementById('promptText').value;
+            closePromptModal();
+            showToast('Prompt saved successfully.');
+        }
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('active');
+
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 3000);
+        }
+
+        // Popover for more tasks
+        function showPopover(event, taskId) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const popover = document.getElementById('popover');
+            const relatedTasks = aiResults[taskId] || [];
+            const hiddenTasks = relatedTasks.slice(2);
+
+            let html = '<div class="popover-header">All Related Tasks</div>';
+            hiddenTasks.forEach(task => {
+                html += `
+                    <div class="popover-item">
+                        <div class="popover-item-title">${task.title}</div>
+                        <div class="popover-item-meta">
+                            <span>${task.listName}</span>
+                            <span class="similarity-score">${task.similarityScore}% match</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            popover.innerHTML = html;
+            popover.classList.add('active');
+
+            // Position popover near the clicked element
+            const rect = event.target.getBoundingClientRect();
+            popover.style.top = `${rect.bottom + window.scrollY + 4}px`;
+            popover.style.left = `${rect.left + window.scrollX}px`;
+        }
+
+        function closePopover() {
+            document.getElementById('popover').classList.remove('active');
+        }
+
+        // Close dropdowns and popovers when clicking outside
+        document.addEventListener('click', (event) => {
+            closeMenu();
+            closePopover();
+        });
+
+        // Close modal on backdrop click
+        document.getElementById('promptModal').addEventListener('click', (event) => {
+            if (event.target.id === 'promptModal') {
+                closePromptModal();
+            }
+        });
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closePromptModal();
+                closeMenu();
+                closePopover();
+            }
+        });
+
+        // Initialize on page load
+        initTable();
+    </script>
+</body>
+</html>
