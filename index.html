@@ -42,6 +42,26 @@
             color: #1f2937;
         }
 
+        .btn-setup {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-setup:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
         .table-wrapper {
             overflow-x: auto;
         }
@@ -644,6 +664,499 @@
             border-radius: 4px;
             font-weight: 500;
         }
+
+        /* Setup Drawer Styles */
+        .drawer-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
+            z-index: 3000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .drawer-backdrop.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 450px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+            z-index: 3001;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .drawer.active {
+            right: 0;
+        }
+
+        .drawer-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .drawer-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .drawer-close {
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .drawer-close:hover {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .drawer-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .drawer-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .step-indicator {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .step-description {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .field-type-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .field-type-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .field-type-card:hover {
+            border-color: #d1d5db;
+            background: #f9fafb;
+        }
+
+        .field-type-card.selected {
+            border-color: #667eea;
+            background: #ede9fe;
+        }
+
+        .field-type-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .field-type-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .field-type-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Search input for field types */
+        .search-input {
+            width: 100%;
+            padding: 10px 12px 10px 36px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>') no-repeat 12px center;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Field type categories */
+        .field-category {
+            margin-top: 24px;
+        }
+
+        .field-category:first-child {
+            margin-top: 16px;
+        }
+
+        .field-category-header {
+            font-size: 11px;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        .field-type-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* Field type items (list style instead of grid) */
+        .field-type-item {
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .field-type-item:hover {
+            border-color: #d1d5db;
+            background: #f9fafb;
+        }
+
+        .field-type-item.selected {
+            border-color: #667eea;
+            background: #ede9fe;
+        }
+
+        .field-type-item.featured {
+            border-color: #f59e0b;
+            background: #fffbeb;
+        }
+
+        .field-type-item.featured.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #ede9fe 0%, #fffbeb 100%);
+        }
+
+        .field-type-item-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+            width: 32px;
+            text-align: center;
+        }
+
+        .field-type-item-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .field-type-item-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .field-type-item-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .field-type-item-description {
+            font-size: 12px;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        /* Featured badge */
+        .featured-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            background: #f59e0b;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .featured-badge::before {
+            content: "⭐";
+            font-size: 10px;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Collapsible sections */
+        .collapsible-section {
+            margin-top: 24px;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 16px;
+        }
+
+        .collapsible-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 8px 0;
+            transition: all 0.2s;
+        }
+
+        .collapsible-header:hover {
+            color: #667eea;
+        }
+
+        .collapsible-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .collapsible-icon {
+            font-size: 14px;
+            color: #9ca3af;
+            transition: transform 0.2s;
+        }
+
+        .collapsible-icon.open {
+            transform: rotate(90deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .collapsible-content.open {
+            max-height: 800px;
+            padding-top: 16px;
+        }
+
+        /* Form validation states */
+        .form-field.error input,
+        .form-field.error textarea {
+            border-color: #ef4444;
+        }
+
+        .form-error {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .form-error::before {
+            content: "⚠";
+        }
+
+        .form-helper {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        .char-count {
+            font-size: 12px;
+            color: #9ca3af;
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .form-field {
+            margin-bottom: 20px;
+        }
+
+        .form-field label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-field input[type="text"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .form-field input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .toggle-field {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .toggle-field:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-label {
+            font-size: 14px;
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        .toggle-description {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 2px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: #e5e7eb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .toggle-switch.active {
+            background: #667eea;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: left 0.2s;
+        }
+
+        .toggle-switch.active::after {
+            left: 22px;
+        }
+
+        .btn-nav {
+            flex: 1;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-back {
+            background: transparent;
+            border: 1px solid #e5e7eb;
+            color: #6b7280;
+        }
+
+        .btn-back:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        .btn-next {
+            background: #667eea;
+            border: none;
+            color: white;
+        }
+
+        .btn-next:hover {
+            background: #5568d3;
+        }
     </style>
 </head>
 <body>
@@ -660,6 +1173,10 @@
 
         <div class="header">
             <h1>Project 1 - Team Space</h1>
+            <button class="btn-setup" onclick="openSetupDrawer()">
+                <span>⚙️</span>
+                <span>View Field Setup</span>
+            </button>
         </div>
 
         <div class="table-wrapper">
@@ -703,6 +1220,21 @@
     <!-- Toast notification -->
     <div class="toast" id="toast"></div>
 
+    <!-- Setup Drawer -->
+    <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeSetupDrawer()"></div>
+    <div class="drawer" id="setupDrawer">
+        <div class="drawer-header">
+            <h2>Create Field</h2>
+            <button class="drawer-close" onclick="closeSetupDrawer()">&times;</button>
+        </div>
+        <div class="drawer-body" id="drawerBody">
+            <!-- Steps will be dynamically rendered here -->
+        </div>
+        <div class="drawer-footer" id="drawerFooter">
+            <!-- Navigation buttons will be dynamically rendered here -->
+        </div>
+    </div>
+
     <script>
         // Sample task data (reduced to 4 related tasks)
         const tasks = [
@@ -740,6 +1272,318 @@
         let aiResults = {};
         let selectedSuggestions = {};
         let currentTaskId = null;
+
+        // Field types catalog
+        const fieldTypeCatalog = {
+            aiFields: [
+                {
+                    id: 'ai-related-tasks',
+                    name: 'Related Tasks',
+                    icon: '🔗',
+                    description: 'AI suggests related tasks based on similarity',
+                    featured: true,
+                    config: {
+                        aiPrompt: 'Suggest up to 3 tasks that are similar or potential duplicates based on title, tags, and description. Prefer tasks in the same list and tasks updated recently.',
+                        autoGenerate: true,
+                        suggestFrom: 'all-lists'
+                    }
+                },
+                {
+                    id: 'ai-summary',
+                    name: 'Summary',
+                    icon: '📝',
+                    description: 'AI-generated task summary from description',
+                    featured: false,
+                    config: {
+                        aiPrompt: 'Generate a concise summary of this task based on its title and description.',
+                        autoGenerate: true,
+                        suggestFrom: 'current-task'
+                    }
+                },
+                {
+                    id: 'ai-custom-text',
+                    name: 'Custom Text',
+                    icon: '✏️',
+                    description: 'AI-generated text based on custom prompt',
+                    featured: false,
+                    config: {
+                        aiPrompt: 'Generate custom text based on task context.',
+                        autoGenerate: false,
+                        suggestFrom: 'current-task'
+                    }
+                },
+                {
+                    id: 'ai-custom-dropdown',
+                    name: 'Custom Dropdown',
+                    icon: '📋',
+                    description: 'AI suggests dropdown option based on task',
+                    featured: false,
+                    config: {
+                        aiPrompt: 'Suggest the most appropriate dropdown option.',
+                        autoGenerate: false,
+                        suggestFrom: 'current-task'
+                    }
+                }
+            ],
+            standardFields: [
+                {
+                    id: 'text',
+                    name: 'Text',
+                    icon: '📄',
+                    description: 'Single line text field'
+                },
+                {
+                    id: 'number',
+                    name: 'Number',
+                    icon: '🔢',
+                    description: 'Numeric value field'
+                },
+                {
+                    id: 'dropdown',
+                    name: 'Dropdown',
+                    icon: '▼',
+                    description: 'Single select from predefined options'
+                },
+                {
+                    id: 'date',
+                    name: 'Date',
+                    icon: '📅',
+                    description: 'Date picker field'
+                },
+                {
+                    id: 'checkbox',
+                    name: 'Checkbox',
+                    icon: '☑',
+                    description: 'Boolean yes/no field'
+                },
+                {
+                    id: 'email',
+                    name: 'Email',
+                    icon: '📧',
+                    description: 'Email address field'
+                },
+                {
+                    id: 'url',
+                    name: 'URL',
+                    icon: '🔗',
+                    description: 'Website link field'
+                },
+                {
+                    id: 'phone',
+                    name: 'Phone',
+                    icon: '📞',
+                    description: 'Phone number field'
+                }
+            ]
+        };
+
+        // Setup drawer state
+        let setupState = {
+            currentStep: 1,
+            selectedFieldType: null,
+            fieldName: '',
+            fieldDescription: '',
+            searchQuery: '',
+            errors: {},
+            advancedSettingsOpen: false,
+            // AI-specific settings (only for AI fields)
+            aiPrompt: '',
+            autoGenerate: true,
+            suggestFrom: 'all-lists'
+        };
+
+        // Setup drawer steps content
+        const setupSteps = {
+            1: {
+                title: 'Search & Select Field Type',
+                description: 'Choose the type of field to add to your workspace',
+                render: () => {
+                    const filteredAiFields = getFilteredFieldTypes(fieldTypeCatalog.aiFields);
+                    const filteredStandardFields = getFilteredFieldTypes(fieldTypeCatalog.standardFields);
+                    const hasResults = filteredAiFields.length > 0 || filteredStandardFields.length > 0;
+
+                    let html = `
+                        <div class="step-indicator">Step 1 of 2</div>
+                        <div class="step-title">Choose Field Type</div>
+                        <div class="step-description">Search and select a field type to add to your tasks.</div>
+
+                        <input
+                            type="text"
+                            class="search-input"
+                            placeholder="Search field types..."
+                            value="${setupState.searchQuery}"
+                            oninput="handleSearchInput(this.value)"
+                            autofocus
+                        />
+                    `;
+
+                    if (!hasResults) {
+                        html += `
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🔍</div>
+                                <div class="empty-state-text">No field types found matching "${setupState.searchQuery}"</div>
+                            </div>
+                        `;
+                    } else {
+                        // AI-Powered Fields Section
+                        if (filteredAiFields.length > 0) {
+                            html += `
+                                <div class="field-category">
+                                    <div class="field-category-header">AI-Powered Fields</div>
+                                    <div class="field-type-list">
+                            `;
+
+                            filteredAiFields.forEach(field => {
+                                const isSelected = setupState.selectedFieldType === field.id;
+                                const featuredClass = field.featured ? 'featured' : '';
+                                const selectedClass = isSelected ? 'selected' : '';
+
+                                html += `
+                                    <div class="field-type-item ${featuredClass} ${selectedClass}" onclick="selectFieldType('${field.id}')">
+                                        <div class="field-type-item-icon">${field.icon}</div>
+                                        <div class="field-type-item-content">
+                                            <div class="field-type-item-header">
+                                                <div class="field-type-item-name">${field.name}</div>
+                                                ${field.featured ? '<span class="featured-badge">Featured</span>' : ''}
+                                                <span class="field-type-badge">AI</span>
+                                            </div>
+                                            <div class="field-type-item-description">${field.description}</div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+
+                            html += `
+                                    </div>
+                                </div>
+                            `;
+                        }
+
+                        // Standard Fields Section
+                        if (filteredStandardFields.length > 0) {
+                            html += `
+                                <div class="field-category">
+                                    <div class="field-category-header">Standard Fields</div>
+                                    <div class="field-type-list">
+                            `;
+
+                            filteredStandardFields.forEach(field => {
+                                const isSelected = setupState.selectedFieldType === field.id;
+                                const selectedClass = isSelected ? 'selected' : '';
+
+                                html += `
+                                    <div class="field-type-item ${selectedClass}" onclick="selectFieldType('${field.id}')">
+                                        <div class="field-type-item-icon">${field.icon}</div>
+                                        <div class="field-type-item-content">
+                                            <div class="field-type-item-header">
+                                                <div class="field-type-item-name">${field.name}</div>
+                                            </div>
+                                            <div class="field-type-item-description">${field.description}</div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+
+                            html += `
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+
+                    return html;
+                }
+            },
+            2: {
+                title: 'Configure & Create',
+                description: 'Set up your field properties',
+                render: () => {
+                    const selectedField = getSelectedFieldType();
+                    const isAiField = selectedField && fieldTypeCatalog.aiFields.find(f => f.id === selectedField.id);
+                    const charCount = setupState.fieldName.length;
+                    const hasError = setupState.errors.fieldName;
+
+                    let html = `
+                        <div class="step-indicator">Step 2 of 2</div>
+                        <div class="step-title">Configure Field</div>
+                        <div class="step-description">Give your field a name and customize its settings.</div>
+
+                        <div class="form-field ${hasError ? 'error' : ''}">
+                            <label>Field Name <span style="color: #ef4444;">*</span></label>
+                            <input
+                                type="text"
+                                id="fieldNameInput"
+                                value="${setupState.fieldName}"
+                                oninput="validateFieldName(this.value)"
+                                placeholder="Enter field name"
+                                maxlength="50"
+                            />
+                            ${hasError ? `<div class="form-error">${setupState.errors.fieldName}</div>` : ''}
+                            <div class="char-count">${charCount}/50</div>
+                        </div>
+
+                        <div class="form-field">
+                            <label>Description <span style="color: #9ca3af; font-weight: 400;">(Optional)</span></label>
+                            <textarea
+                                id="fieldDescriptionInput"
+                                placeholder="Add a description to help your team understand this field..."
+                                oninput="setupState.fieldDescription = this.value"
+                                style="width: 100%; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; font-family: inherit; resize: vertical; min-height: 80px;"
+                            >${setupState.fieldDescription}</textarea>
+                            <div class="form-helper">This description will appear when users hover over the field.</div>
+                        </div>
+                    `;
+
+                    // Add advanced settings section for AI fields only
+                    if (isAiField) {
+                        const isOpen = setupState.advancedSettingsOpen;
+                        html += `
+                            <div class="collapsible-section">
+                                <div class="collapsible-header" onclick="toggleAdvancedSettings()">
+                                    <div class="collapsible-title">Advanced Settings</div>
+                                    <div class="collapsible-icon ${isOpen ? 'open' : ''}" id="advancedSettingsIcon">▶</div>
+                                </div>
+                                <div class="collapsible-content ${isOpen ? 'open' : ''}" id="advancedSettingsContent">
+                                    <div class="form-field">
+                                        <label>AI Instructions</label>
+                                        <textarea
+                                            id="aiPromptInput"
+                                            oninput="setupState.aiPrompt = this.value"
+                                            style="width: 100%; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; font-family: inherit; resize: vertical; min-height: 100px;"
+                                            placeholder="Tell the AI how to analyze and generate suggestions..."
+                                        >${setupState.aiPrompt}</textarea>
+                                        <div class="form-helper">Customize how AI analyzes tasks and generates suggestions.</div>
+                                    </div>
+
+                                    <div class="toggle-field">
+                                        <div>
+                                            <div class="toggle-label">Auto-generate on task creation</div>
+                                            <div class="toggle-description">Automatically suggest related tasks when a new task is created</div>
+                                        </div>
+                                        <div class="toggle-switch ${setupState.autoGenerate ? 'active' : ''}" onclick="toggleAutoGenerate()" id="autoGenerateToggle"></div>
+                                    </div>
+
+                                    <div class="form-field" style="margin-top: 16px;">
+                                        <label>Suggest tasks from</label>
+                                        <select
+                                            id="suggestFromSelect"
+                                            onchange="setupState.suggestFrom = this.value"
+                                            style="width: 100%; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; font-family: inherit; background: white; cursor: pointer;"
+                                        >
+                                            <option value="current-list" ${setupState.suggestFrom === 'current-list' ? 'selected' : ''}>Current list only</option>
+                                            <option value="current-space" ${setupState.suggestFrom === 'current-space' ? 'selected' : ''}>Current space</option>
+                                            <option value="all-lists" ${setupState.suggestFrom === 'all-lists' ? 'selected' : ''}>All lists</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    return html;
+                }
+            }
+        };
 
         // Initialize the table
         function initTable() {
@@ -959,6 +1803,193 @@
             }, 3000);
         }
 
+        // Setup Drawer Functions
+        function openSetupDrawer() {
+            // Reset and initialize state
+            setupState = {
+                currentStep: 1,
+                selectedFieldType: 'ai-related-tasks', // Pre-select featured field
+                fieldName: 'AI Related Tasks', // Pre-populate field name
+                fieldDescription: '',
+                searchQuery: '',
+                errors: {},
+                advancedSettingsOpen: false,
+                aiPrompt: 'Suggest up to 3 tasks that are similar or potential duplicates based on title, tags, and description. Prefer tasks in the same list and tasks updated recently.',
+                autoGenerate: true,
+                suggestFrom: 'all-lists'
+            };
+
+            renderStep();
+            setTimeout(() => {
+                document.getElementById('drawerBackdrop').classList.add('active');
+                document.getElementById('setupDrawer').classList.add('active');
+            }, 10);
+        }
+
+        function closeSetupDrawer() {
+            document.getElementById('drawerBackdrop').classList.remove('active');
+            document.getElementById('setupDrawer').classList.remove('active');
+        }
+
+        function renderStep() {
+            const step = setupSteps[setupState.currentStep];
+            if (!step) return;
+
+            // Render step content
+            document.getElementById('drawerBody').innerHTML = step.render();
+
+            // Render navigation buttons
+            const footer = document.getElementById('drawerFooter');
+            let footerHTML = '';
+
+            if (setupState.currentStep > 1) {
+                footerHTML += '<button class="btn-nav btn-back" onclick="previousStep()">Back</button>';
+            } else {
+                footerHTML += '<button class="btn-nav btn-back" onclick="closeSetupDrawer()">Cancel</button>';
+            }
+
+            if (setupState.currentStep < 2) {
+                const isDisabled = !setupState.selectedFieldType;
+                footerHTML += `<button class="btn-nav btn-next" onclick="nextStep()" ${isDisabled ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>Next</button>`;
+            } else {
+                footerHTML += '<button class="btn-nav btn-next" onclick="createField()">Create</button>';
+            }
+
+            footer.innerHTML = footerHTML;
+        }
+
+        function nextStep() {
+            if (setupState.currentStep < 2) {
+                // Validate selection before proceeding
+                if (!setupState.selectedFieldType) {
+                    return;
+                }
+
+                setupState.currentStep++;
+
+                // Initialize field name and AI settings if an AI field is selected
+                const selectedField = getSelectedFieldType();
+                if (selectedField) {
+                    // Pre-populate field name if empty
+                    if (!setupState.fieldName) {
+                        setupState.fieldName = selectedField.name;
+                    }
+
+                    // Load AI config if it's an AI field
+                    if (selectedField.config) {
+                        setupState.aiPrompt = selectedField.config.aiPrompt;
+                        setupState.autoGenerate = selectedField.config.autoGenerate;
+                        setupState.suggestFrom = selectedField.config.suggestFrom;
+                    }
+                }
+
+                renderStep();
+            }
+        }
+
+        function previousStep() {
+            if (setupState.currentStep > 1) {
+                setupState.currentStep--;
+                renderStep();
+            }
+        }
+
+        function createField() {
+            // Validate field name
+            if (!setupState.fieldName.trim()) {
+                setupState.errors.fieldName = 'Field name is required';
+                renderStep();
+                return;
+            }
+
+            // Get selected field type
+            const fieldType = getSelectedFieldType();
+
+            closeSetupDrawer();
+            showToast(`${fieldType.name} field "${setupState.fieldName}" created successfully!`);
+
+            // Reset state for next time
+            setupState = {
+                currentStep: 1,
+                selectedFieldType: null,
+                fieldName: '',
+                fieldDescription: '',
+                searchQuery: '',
+                errors: {},
+                advancedSettingsOpen: false,
+                aiPrompt: '',
+                autoGenerate: true,
+                suggestFrom: 'all-lists'
+            };
+        }
+
+        // Helper functions for field type catalog
+        function getSelectedFieldType() {
+            const allFields = [...fieldTypeCatalog.aiFields, ...fieldTypeCatalog.standardFields];
+            return allFields.find(f => f.id === setupState.selectedFieldType);
+        }
+
+        function getFilteredFieldTypes(fields) {
+            if (!setupState.searchQuery) return fields;
+            return fields.filter(f =>
+                f.name.toLowerCase().includes(setupState.searchQuery) ||
+                f.description.toLowerCase().includes(setupState.searchQuery)
+            );
+        }
+
+        // Search functionality
+        function handleSearchInput(query) {
+            setupState.searchQuery = query.toLowerCase();
+            renderStep();
+        }
+
+        // Field type selection
+        function selectFieldType(fieldId) {
+            setupState.selectedFieldType = fieldId;
+            renderStep();
+        }
+
+        // Field name validation
+        function validateFieldName(value) {
+            setupState.fieldName = value;
+
+            if (!value.trim()) {
+                setupState.errors.fieldName = 'Field name is required';
+            } else if (value.length > 50) {
+                setupState.errors.fieldName = 'Field name must be 50 characters or less';
+            } else {
+                delete setupState.errors.fieldName;
+            }
+
+            renderStep();
+        }
+
+        // Toggle advanced settings
+        function toggleAdvancedSettings() {
+            setupState.advancedSettingsOpen = !setupState.advancedSettingsOpen;
+            const content = document.getElementById('advancedSettingsContent');
+            const icon = document.getElementById('advancedSettingsIcon');
+
+            if (setupState.advancedSettingsOpen) {
+                content.classList.add('open');
+                icon.classList.add('open');
+            } else {
+                content.classList.remove('open');
+                icon.classList.remove('open');
+            }
+        }
+
+        // Toggle auto-generate setting
+        function toggleAutoGenerate() {
+            setupState.autoGenerate = !setupState.autoGenerate;
+            const toggle = document.getElementById('autoGenerateToggle');
+            if (setupState.autoGenerate) {
+                toggle.classList.add('active');
+            } else {
+                toggle.classList.remove('active');
+            }
+        }
+
         // Close modal on backdrop click
         document.getElementById('reviewModal').addEventListener('click', (event) => {
             if (event.target.id === 'reviewModal') {
@@ -966,10 +1997,11 @@
             }
         });
 
-        // Close modal on ESC key
+        // Close modal/drawer on ESC key
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') {
                 closeReviewModal();
+                closeSetupDrawer();
             }
         });
 
